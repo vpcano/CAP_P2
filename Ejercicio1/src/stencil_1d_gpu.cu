@@ -31,6 +31,9 @@
         if (gindex < N) {
             temp[lindex] = in[gindex];
         }
+        else {
+            temp[lindex] = 0;
+        }
 
         __syncthreads();
 
