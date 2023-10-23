@@ -6,7 +6,6 @@
     using namespace std;
 
     #define RADIUS 3
-    #define BLOCK_SIZE 16
 
     __global__ void stencil_1D(int *in, int *out, int N) {
         __shared__ int temp[BLOCK_SIZE + 2*RADIUS];
@@ -56,13 +55,13 @@
         struct timeval t1, t2;
         double t_total;
 
-        if (argc < 3) {
-            printf("Error: you must indicate the block size\n");
+        if (argc < 2) {
+            printf("Error: you must indicate the length of the array\n");
             return 1;
         }
 
-        if (argc < 2) {
-            printf("Error: you must indicate the length of the array\n");
+        if (argc < 3) {
+            printf("Error: you must indicate the block size\n");
             return 1;
         }
 
