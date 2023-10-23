@@ -20,7 +20,7 @@
                 temp[lindex - RADIUS] = in[gindex - RADIUS];
             }
             if (gindex + blockDim.x < N) {
-                temp[lindex + blockDim.x] = in[gindex + BLOCK_SIZE];
+                temp[lindex + blockDim.x] = in[gindex + blockDim.x];
             }
             else {
                 temp[lindex + blockDim.x] = 0;
