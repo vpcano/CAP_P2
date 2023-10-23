@@ -52,9 +52,14 @@
     int main(int argc, char *argv[]) {
         int *h_in, *h_out;
         int *d_in, *d_out;
-        int N, size;
+        int N, size, b_size;
         struct timeval t1, t2;
         double t_total;
+
+        if (argc < 3) {
+            printf("Error: you must indicate the block size\n");
+            return 1;
+        }
 
         if (argc < 2) {
             printf("Error: you must indicate the length of the array\n");
@@ -63,6 +68,7 @@
 
         N = atoi(argv[1]);
         size = N * sizeof(int);
+        b_size = atoi(argv[2]);
 
         h_in = (int*) malloc(size);
         h_out = (int*) malloc(size);
@@ -76,7 +82,7 @@
         cudaMemcpy(d_in, h_in, size, cudaMemcpyHostToDevice);
         cudaMemcpy(d_out, h_out, size, cudaMemcpyHostToDevice);
 
-        stencil_1D<<<(N+BLOCK_SIZE-1)/BLOCK_SIZE,BLOCK_SIZE>>>(d_in, d_out, N);
+        stencil_1D<<<(N+b_size-1)/b_size,b_size>>>(d_in, d_out, N);
 
         cudaMemcpy(h_out, d_out, size, cudaMemcpyDeviceToHost);
 
