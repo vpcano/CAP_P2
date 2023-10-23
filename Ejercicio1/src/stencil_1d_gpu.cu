@@ -82,11 +82,13 @@
 
         gettimeofday(&t2, NULL);
 
+        /*
         printf("Output: \n");
         for (int i=0; i<N; i++) {
             printf("%d ", h_out[i]);
         }
         printf("\n");
+        */
 
         t_total = (t2.tv_sec - t1.tv_sec)*1000000.0 + (t2.tv_usec - t1.tv_usec);
         printf("%d\t%f\n", N, t_total);
