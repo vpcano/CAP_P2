@@ -6,9 +6,10 @@
     using namespace std;
 
     #define RADIUS 3
+    #define BLOCK_SIZE 16
 
     __global__ void stencil_1D(int *in, int *out, int N) {
-        __shared__ int temp[blockDim.x + 2*RADIUS];
+        __shared__ int temp[BLOCK_SIZE + 2*RADIUS];
         int gindex = threadIdx.x + blockIdx.x*blockDim.x;
         int lindex = threadIdx.x + RADIUS;
 
@@ -19,11 +20,11 @@
             else {
                 temp[lindex - RADIUS] = in[gindex - RADIUS];
             }
-            if (gindex + blockDim.x < N) {
-                temp[lindex + blockDim.x] = in[gindex + blockDim.x];
+            if (gindex + BLOCK_SIZE < N) {
+                temp[lindex + BLOCK_SIZE] = in[gindex + BLOCK_SIZE];
             }
             else {
-                temp[lindex + blockDim.x] = 0;
+                temp[lindex + BLOCK_SIZE] = 0;
             }
         }
 
@@ -51,7 +52,7 @@
     int main(int argc, char *argv[]) {
         int *h_in, *h_out;
         int *d_in, *d_out;
-        int N, size, b_size;
+        int N, size;
         struct timeval t1, t2;
         double t_total;
 
@@ -60,14 +61,8 @@
             return 1;
         }
 
-        if (argc < 3) {
-            printf("Error: you must indicate the block size\n");
-            return 1;
-        }
-
         N = atoi(argv[1]);
         size = N * sizeof(int);
-        b_size = atoi(argv[2]);
 
         h_in = (int*) malloc(size);
         h_out = (int*) malloc(size);
@@ -81,7 +76,7 @@
         cudaMemcpy(d_in, h_in, size, cudaMemcpyHostToDevice);
         cudaMemcpy(d_out, h_out, size, cudaMemcpyHostToDevice);
 
-        stencil_1D<<<(N+b_size-1)/b_size,b_size>>>(d_in, d_out, N);
+        stencil_1D<<<(N+BLOCK_SIZE-1)/BLOCK_SIZE,BLOCK_SIZE>>>(d_in, d_out, N);
 
         cudaMemcpy(h_out, d_out, size, cudaMemcpyDeviceToHost);
 
