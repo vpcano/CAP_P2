@@ -9,7 +9,7 @@
     #include "cuda.h"
     #include "cuda_runtime.h"
 
-    #define BLOCK_SIZE_SIDE 16
+    #define BLOCK_SIZE_SIDE 32
 
     __global__ void rgbToGrayscale(uint8_t *rgb_image, uint8_t *grey_image, int width, int height, int nchannels) {
         int x = blockIdx.x * blockDim.x + threadIdx.x;
