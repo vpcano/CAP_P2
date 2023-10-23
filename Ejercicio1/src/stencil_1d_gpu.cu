@@ -8,7 +8,7 @@
     #define RADIUS 3
 
     __global__ void stencil_1D(int *in, int *out, int N) {
-        __shared__ int temp[BLOCK_SIZE + 2*RADIUS];
+        __shared__ int temp[blockDim.x + 2*RADIUS];
         int gindex = threadIdx.x + blockIdx.x*blockDim.x;
         int lindex = threadIdx.x + RADIUS;
 
@@ -19,11 +19,11 @@
             else {
                 temp[lindex - RADIUS] = in[gindex - RADIUS];
             }
-            if (gindex + BLOCK_SIZE < N) {
-                temp[lindex + BLOCK_SIZE] = in[gindex + BLOCK_SIZE];
+            if (gindex + blockDim.x < N) {
+                temp[lindex + blockDim.x] = in[gindex + BLOCK_SIZE];
             }
             else {
-                temp[lindex + BLOCK_SIZE] = 0;
+                temp[lindex + blockDim.x] = 0;
             }
         }
 
